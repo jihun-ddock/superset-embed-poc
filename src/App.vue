@@ -1,26 +1,21 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+    <SupersetDashboard :dashboard-id="dashboardId" />
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import SupersetDashboard from './components/SupersetDashboard.vue';
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    SupersetDashboard
+  },
+  data() {
+    return {
+      dashboardId: '81f2499a-b35a-4457-b252-18057d3c1656' // 실제 대시보드 ID
+    };
   }
-}
+};
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
