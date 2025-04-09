@@ -14,7 +14,7 @@ export default {
   },
   data() {
     return {
-      dashboardId: '81f2499a-b35a-4457-b252-18057d3c1656' // 실제 대시보드 ID
+      dashboardId: `${process.env.VUE_APP_DASHBOARD_ID}` // 실제 대시보드 ID
     };
   }
 };

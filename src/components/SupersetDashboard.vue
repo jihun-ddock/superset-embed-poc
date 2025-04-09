@@ -24,9 +24,9 @@ export default {
                 const response = await axios.post(
                     `${process.env.VUE_APP_SUPERSET_DOMAIN}/api/v1/security/login`,
                     {
-                        username: "viewer",
-                        password: "test",
-                        provider: "db", // ldap, oauth, oidc 가능
+                        username: `${process.env.VUE_APP_SUPERSET_PUBLIC_ID}`, // user ID
+                        password: `${process.env.VUE_APP_SUPERSET_PUBLIC_PW}`,
+                        provider: "db" , // ldap, oauth, oidc 가능
                         refresh: true
                     }
                 );
@@ -63,7 +63,9 @@ export default {
                 const response = await axios.post(
                     `${process.env.VUE_APP_SUPERSET_DOMAIN}/api/v1/security/guest_token/`,
                     {
-                        user: { username: "guest_user" },
+                        user: {
+                            username: `${process.env.VUE_APP_SUPERSET_PUBLIC_ID}`, // 뷰어 사용자 ID
+                        },
                         resources: [{ type: "dashboard", id: this.dashboardId }],
                         rls: []
                     },
@@ -87,7 +89,7 @@ export default {
             try {
                 embedDashboard({
                     id: this.dashboardId,
-                    supersetDomain: "http://localhost:9000",
+                    supersetDomain: `${process.env.VUE_APP_SUPERSET_DOMAIN}`,
                     mountPoint: this.$refs.dashboardContainer,
                     fetchGuestToken: () => this.fetchGuestTokenFromBackend(),
                     width: "100%",
