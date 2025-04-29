@@ -3,7 +3,7 @@ module.exports = {
   devServer: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8088',
+        target: 'https://bi.testworks.dev',
         changeOrigin: true,
         secure: false
       }
