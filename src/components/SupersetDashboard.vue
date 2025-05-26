@@ -5,6 +5,7 @@
 <script>
 import { embedDashboard } from '@superset-ui/embedded-sdk';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 export default {
     name: 'SupersetDashboard',
@@ -19,7 +20,7 @@ export default {
     },
     methods: {
         // 로그인 정보 이용하여 Access Token을 가져옴
-        async fetchViewerToken() {
+        async fetchAccessToken() {
             try {
                 const response = await axios.post(
                     `${process.env.VUE_APP_SUPERSET_DOMAIN}/api/v1/security/login`,
@@ -30,7 +31,8 @@ export default {
                         refresh: true
                     }
                 );
-                return response.data.access_token;
+                Cookies.set('accessToken', response.data.access_token, { expires: 1 }); // 7일 동안 유효
+                // return response.data.access_token;
             } catch (error) {
                 console.error('Admin token error:', error);
                 throw error;
@@ -38,13 +40,20 @@ export default {
         },
         
         // CSRF 토큰 가져오기
-        async getCsrfToken() {
+        async getCsrfToken(accessToken) {
             try {
                 const response = await axios.get(
                     `${process.env.VUE_APP_SUPERSET_DOMAIN}/api/v1/security/csrf_token/`,
-                    { withCredentials: true }
+                    { 
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${accessToken}`,  // 뷰어 토큰 추가
+                        },
+                        withCredentials: true
+                    }
                 );
-                return response.data.result;
+                Cookies.set('csrfToken', response.data.result, { expires: 1 }); // 7일 동안 유효
+                // return response.data.result;
             } catch (error) {
                 console.error('CSRF token error:', error);
                 throw error;
@@ -54,10 +63,12 @@ export default {
         async fetchGuestTokenFromBackend() {
             try {
                 // 1. 뷰어 토큰 획득
-                const viewerToken = await this.fetchViewerToken();
+                await this.fetchAccessToken();
+                const accessToken = Cookies.get('accessToken');
 
                 // 2. CSRF 토큰 획득
-                const csrfToken = await this.getCsrfToken();
+                await this.getCsrfToken(accessToken);
+                const csrfToken = Cookies.get('csrfToken');
 
                 // 3. Guest Token 요청
                 const response = await axios.post(
@@ -72,8 +83,8 @@ export default {
                     {
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${viewerToken}`,  // 뷰어 토큰 추가
-                            'X-CSRFToken': csrfToken                   // CSRF 토큰 추가
+                            'Authorization': `Bearer ${accessToken}`,  // 뷰어 토큰 추가
+                            'X-CSRF-Token': `${csrfToken}`    // CSRF 토큰 추가
                         },
                         withCredentials: true
                     }
