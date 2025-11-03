@@ -27,7 +27,7 @@ export default {
                     {
                         username: `${process.env.VUE_APP_SUPERSET_PUBLIC_ID}`, // user ID
                         password: `${process.env.VUE_APP_SUPERSET_PUBLIC_PW}`,
-                        provider: "db" , // ldap, oauth, oidc 가능
+                        provider: "db", // ldap, oauth, oidc 가능
                         refresh: true
                     }
                 );
@@ -38,13 +38,13 @@ export default {
                 throw error;
             }
         },
-        
+
         // CSRF 토큰 가져오기
         async getCsrfToken(accessToken) {
             try {
                 const response = await axios.get(
                     `${process.env.VUE_APP_SUPERSET_DOMAIN}/api/v1/security/csrf_token/`,
-                    { 
+                    {
                         headers: {
                             'Content-Type': 'application/json',
                             'Authorization': `Bearer ${accessToken}`,  // 뷰어 토큰 추가
@@ -121,7 +121,6 @@ export default {
                         'allow-popups',
                         'allow-top-navigation'
                     ]
-                    
                 });
             } catch (error) {
                 console.error('Embedding error:', error);
@@ -134,20 +133,20 @@ export default {
 <style>
 /* 컨테이너 스타일 */
 .dashboard-container {
-  width: 100%; 
-  height: 800px;
-  border: 1px solid #ddd;
-  overflow: hidden;
-  position: relative;
+    width: 100%;
+    height: 800px;
+    border: 1px solid #ddd;
+    overflow: hidden;
+    position: relative;
 }
 
 /* iframe이 생성된 후 자동으로 적용되는 스타일 */
 .dashboard-container iframe {
-  width: 100% !important;
-  height: 100% !important;
-  border: none !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
 }
 </style>
